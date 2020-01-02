@@ -17,7 +17,7 @@ struct AEROFLOT
 {
     /* Наименование аэропорта (не более 25 букв) */
     std::string strDestination;
-    /* Номер перелета (10 цифр) */
+    /* Номер перелета (4 цифры) */
     size_t nFlightNumber;
     /* Тип самолета - Одна заглавная буква и 4 цифры */
     std::string strAircraftType;
@@ -27,12 +27,16 @@ bool operator==(const AEROFLOT& lhs, const AEROFLOT& rhs);
 
 AEROFLOT EnterFlight();
 
+void EditFlight(AEROFLOT& flight);
+
 void PrintFlight(const AEROFLOT& flight);
 
 
 QJsonArray AeroflotListToJson(const LinkedList<AEROFLOT>& arrFlight);
 
 LinkedList<AEROFLOT>* JsonToAeroflotList(const QJsonArray& jArr, ERRORS* pError = nullptr);
+
+LinkedList<AEROFLOT>* FindByAircraft(LinkedList<AEROFLOT>* pList, const std::string& strFindAir, ERRORS* pError = nullptr);
 
 
 QJsonObject AeroflotToJson(const AEROFLOT& flight);

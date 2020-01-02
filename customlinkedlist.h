@@ -42,12 +42,11 @@ public:
 
         pNode->m_pNext = pNewnode;
     }
+
     void RemoveAfter(Node* pNode)
     {
         if(pNode == nullptr)
         {
-            PopFront();
-
             return;
         }
 
@@ -59,6 +58,36 @@ public:
 
             delete pNextNode;
         }
+    }
+
+    void Remove(Node* pNode)
+    {
+        if(pNode == nullptr)
+        {
+            return;
+        }
+
+        if(pNode == m_pHead)
+        {
+            PopFront();
+
+            return;
+        }
+
+
+        Node* pBeforeNode = m_pHead;
+
+        while(pBeforeNode->m_pNext != pNode)
+        {
+            pBeforeNode = pBeforeNode->m_pNext;
+
+            if(pBeforeNode == nullptr) //Защита от бесконечного цикла
+            {
+                return;
+            }
+        }
+
+        RemoveAfter(pBeforeNode);
     }
 
     void PopFront()
@@ -107,7 +136,7 @@ public:
 
         while (pNode != nullptr)
         {
-            const T& currentVal = pNode->m_value;
+            const T currentVal = pNode->m_value;
 
             if(currentVal == value)
             {

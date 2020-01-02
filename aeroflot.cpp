@@ -3,6 +3,7 @@
 #include <iostream>
 #include <iomanip>
 #include <regex>
+#include <tuple>
 #include <math.h>
 
 #include <QJsonArray>
@@ -197,7 +198,7 @@ bool CheckNumber(int iFlightNumber)
 
     const int iCount = std::log10 (iFlightNumber) + 1;
 
-    return iCount == 10;
+    return iCount == 4;
 }
 
 AEROFLOT EnterFlight()
@@ -207,7 +208,7 @@ AEROFLOT EnterFlight()
     std::string strTemp;
     bool bFirst = true;
 
-    std::cout <<  "Enter airport destination:";
+    std::cout <<  "Enter airport destination: ";
     do
     {
         if(bFirst)
@@ -227,7 +228,7 @@ AEROFLOT EnterFlight()
 
 
     bFirst = true;
-    std::cout <<  "Enter aircraft type:";
+    std::cout <<  "Enter aircraft type: ";
     do
     {
         if(bFirst)
@@ -248,7 +249,7 @@ AEROFLOT EnterFlight()
 
     int iNumber = 0;
     bFirst = true;
-    std::cout <<  "Enter flight number:";
+    std::cout <<  "Enter flight number: ";
     do
     {
         if(bFirst)
@@ -257,7 +258,7 @@ AEROFLOT EnterFlight()
         }
         else
         {
-            std::cout << "Flight number must be 10 digits long" << std::endl;
+            std::cout << "Flight number must be 4 digits long" << std::endl;
         }
 
         iNumber = GetIntValue();
@@ -272,5 +273,137 @@ AEROFLOT EnterFlight()
 
 bool operator==(const AEROFLOT &lhs, const AEROFLOT &rhs)
 {
-    return true;
+    return std::make_tuple(lhs.nFlightNumber, lhs.strDestination, lhs.strAircraftType)
+           == std::make_tuple(rhs.nFlightNumber, rhs.strDestination, rhs.strAircraftType);
+}
+
+LinkedList<AEROFLOT>* FindByAircraft(LinkedList<AEROFLOT> *pList, const std::string& strFindAir, ERRORS* pError)
+{
+    if(pList == nullptr || strFindAir.empty())
+    {
+        if(pError != nullptr)
+        {
+            *pError = ERRORS::INVALID_ARGUMENT;
+        }
+
+        return nullptr;
+    }
+
+    LinkedList<AEROFLOT>*const pResult = new LinkedList<AEROFLOT>();
+
+    const LinkedList<AEROFLOT>::Node* pNode = pList->GetHead();
+
+    while(pNode != nullptr)
+    {
+        const AEROFLOT& flight = pNode->m_value;
+
+        const std::string& strAirCraft = flight.strAircraftType;
+
+        if(strAirCraft == strFindAir)
+        {
+            pResult->PushFront(flight);
+        }
+
+        pNode = pNode->m_pNext;
+    }
+
+    if(pError != nullptr)
+    {
+        *pError = ERRORS::NO_ERROR;
+    }
+
+    return pResult;
+}
+
+void EditFlight(AEROFLOT& flight)
+{
+    std::cout << "Edit destination? y - yes, another - no : ";
+
+    std::string strEdit = GetStringValue();
+
+    if(strEdit == "y")
+    {
+        bool bFirst = true;
+        std::string strTemp;
+
+        std::cout <<  "Enter new airport destination: ";
+        do
+        {
+            if(bFirst)
+            {
+                bFirst = false;
+            }
+            else
+            {
+                std::cout << "Destination must have a maximum of 25 characters" << std::endl;
+            }
+
+            strTemp = GetStringValue();
+        }
+        while(!CheckDestination(strTemp));
+
+        flight.strDestination = strTemp;
+    }
+
+
+
+    std::cout << "Edit flight number? y - yes, another - no : ";
+
+    strEdit = GetStringValue();
+
+    if(strEdit == "y")
+    {
+        bool bFirst = true;
+
+        int iNumber = 0;
+
+        std::cout <<  "Enter new flight number: ";
+        do
+        {
+            if(bFirst)
+            {
+                bFirst = false;
+            }
+            else
+            {
+                std::cout << "Flight number must be 4 digits long" << std::endl;
+            }
+
+            iNumber = GetIntValue();
+        }
+        while(!CheckNumber(iNumber));
+
+        flight.nFlightNumber = iNumber;
+    }
+
+
+
+    std::cout << "Edit aircraft type? y - yes, another - no : ";
+
+    strEdit = GetStringValue();
+
+    if(strEdit == "y")
+    {
+        bool bFirst = true;
+        std::string strTemp;
+
+        std::cout <<  "Enter aircraft type: ";
+
+        do
+        {
+            if(bFirst)
+            {
+                bFirst = false;
+            }
+            else
+            {
+                std::cout << "The type of aircraft must consist of one capital letter and 4 digits" << std::endl;
+            }
+
+            strTemp = GetStringValue();
+        }
+        while(!CheckAircraftType(strTemp));
+
+        flight.strAircraftType = strTemp;
+    }
 }
