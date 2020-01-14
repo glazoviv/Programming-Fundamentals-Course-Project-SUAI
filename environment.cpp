@@ -8,8 +8,6 @@
 #include <QJsonArray>
 #include <QFile>
 
-
-
 void ClearConsole()
 {
     std::cout << "\x1B[2J\x1B[H" << std::endl;

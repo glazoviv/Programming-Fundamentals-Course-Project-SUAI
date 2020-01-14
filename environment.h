@@ -14,16 +14,9 @@ void PressToContinue();
 
 void ClearConsole();
 
-
-
 int GetIntValue();
 
 std::string GetStringValue();
-
-
-std::string GetDestination();
-
-
 
 ERRORS SaveToFile(const QJsonArray& jArr, const std::string& strName);
 

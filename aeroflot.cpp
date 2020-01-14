@@ -18,13 +18,6 @@ constexpr int DESTINATION_PADDING = 25;
 constexpr int AIRCRAFT_PADDING = 15;
 constexpr int ADDITION_HEAD_TABLE = 2;
 
-void PrintFlight(const AEROFLOT& flight)
-{
-    std::cout << "Destination: "   << flight.strDestination     << " "
-              << "Flight number: " << flight.nFlightNumber      << " "
-              << "Aircraft type: " << flight.strAircraftType;
-}
-
 void PrintLine(size_t nSize)
 {
     std::cout << std::setfill('-')
@@ -317,6 +310,40 @@ LinkedList<AEROFLOT>* FindByAircraft(LinkedList<AEROFLOT> *pList, const std::str
 
 void EditFlight(AEROFLOT& flight)
 {
+    int iNumParam = 1;
+
+    while (iNumParam >= 1 && iNumParam <= 3)
+    {
+        std::cout << "Enter number of parameter:"
+                  << "\n 1. Destination"
+                  << "\n 2. Flight number"
+                  << "\n 3. Aircraft type"
+                  << "\n Another integer - save"
+                  << std::endl;
+
+        iNumParam = GetIntValue();
+
+        switch(iNumParam)
+        {
+        case 1:
+            EditDestination(flight.strDestination);
+            break;
+        case 2:
+            EditFlightNumber(flight.nFlightNumber);
+            break;
+        case 3:
+            EditAircraftType(flight.strAircraftType);
+            break;
+        }
+
+        std::cout << '\n' << std::endl;
+    }
+
+
+
+
+
+#ifdef OLD
     std::cout << "Edit destination? y - yes, another - no : ";
 
     std::string strEdit = GetStringValue();
@@ -406,4 +433,80 @@ void EditFlight(AEROFLOT& flight)
 
         flight.strAircraftType = strTemp;
     }
+#endif
+}
+
+void EditDestination(std::string &strDestination)
+{
+
+    bool bFirst = true;
+    std::string strTemp;
+
+    std::cout <<  "Enter new airport destination: ";
+    do
+    {
+        if(bFirst)
+        {
+            bFirst = false;
+        }
+        else
+        {
+            std::cout << "Destination must have a maximum of 25 characters" << std::endl;
+        }
+
+        strTemp = GetStringValue();
+    }
+    while(!CheckDestination(strTemp));
+
+    strDestination = strTemp;
+}
+
+void EditFlightNumber(size_t &nFlightNumber)
+{
+    bool bFirst = true;
+
+    int iNumber = 0;
+
+    std::cout <<  "Enter new flight number: ";
+    do
+    {
+        if(bFirst)
+        {
+            bFirst = false;
+        }
+        else
+        {
+            std::cout << "Flight number must be 4 digits long" << std::endl;
+        }
+
+        iNumber = GetIntValue();
+    }
+    while(!CheckNumber(iNumber));
+
+    nFlightNumber = iNumber;
+}
+
+void EditAircraftType(std::string& strAircraftType)
+{
+    bool bFirst = true;
+    std::string strTemp;
+
+    std::cout <<  "Enter aircraft type: ";
+
+    do
+    {
+        if(bFirst)
+        {
+            bFirst = false;
+        }
+        else
+        {
+            std::cout << "The type of aircraft must consist of one capital letter and 4 digits" << std::endl;
+        }
+
+        strTemp = GetStringValue();
+    }
+    while(!CheckAircraftType(strTemp));
+
+    strAircraftType = strTemp;
 }

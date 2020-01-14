@@ -29,8 +29,9 @@ AEROFLOT EnterFlight();
 
 void EditFlight(AEROFLOT& flight);
 
-void PrintFlight(const AEROFLOT& flight);
-
+void EditDestination(std::string& strDestination);
+void EditFlightNumber(size_t& nFlightNumber);
+void EditAircraftType(std::string& strAircraftType);
 
 QJsonArray AeroflotListToJson(const LinkedList<AEROFLOT>& arrFlight);
 
@@ -38,11 +39,9 @@ LinkedList<AEROFLOT>* JsonToAeroflotList(const QJsonArray& jArr, ERRORS* pError 
 
 LinkedList<AEROFLOT>* FindByAircraft(LinkedList<AEROFLOT>* pList, const std::string& strFindAir, ERRORS* pError = nullptr);
 
-
 QJsonObject AeroflotToJson(const AEROFLOT& flight);
 
 ERRORS PrintFlightList(const LinkedList<AEROFLOT>& arrFlight);
-
 
 bool PredicateSortByDestination(const AEROFLOT& flight1, const AEROFLOT& flight2);
 

@@ -1,23 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
-#include <QtDebug>
 #include <QJsonArray>
-#include <QJsonObject>
-
 #include "customlinkedlist.h"
 #include "aeroflot.h"
 #include "environment.h"
-
-/*
- Предметная область – «Расписание рейсов самолетов».
- Данные о рейсе хранятся в структуре с именем AEROFLOT, содержащей следующие поля:
-    * название пункта назначения рейса;
-    * номер рейса;
-    * тип самолѐта.
- Задание на поиск: найти рейсы, обслуживаемые самолѐтом, тип которого введѐн с клавиатуры.
- */
 
 int main()
 {
@@ -39,6 +26,8 @@ int main()
         {
         case 1:
         {
+            std::cout << "Add flight\n\n";
+
             const AEROFLOT flight = EnterFlight();
 
             const LinkedList<AEROFLOT>::Node*const pNode = pFlights->Find(flight);
@@ -55,17 +44,41 @@ int main()
             break;
         case 2:
         {
-            std::cout << "Search editable flight:";
+            std::cout << "Edit flight\n\n";
 
-            const AEROFLOT flight = EnterFlight();
+            std::cout << "Search editable flight:\n";
+
+            AEROFLOT flight = EnterFlight();
 
             LinkedList<AEROFLOT>::Node*const pNode = pFlights->Find(flight);
 
             if(pNode != nullptr)
             {
-                EditFlight(pNode->m_value);
+                EditFlight(flight);
 
-                std::cout << "Sucess edit";
+                const LinkedList<AEROFLOT>::Node*const pFindEqual = pFlights->Find(flight);
+
+                bool bUniq = true;
+
+                if(pFindEqual != nullptr)
+                {
+                    if(pFindEqual != pNode)
+                    {
+                        bUniq = false;
+                    }
+                }
+
+                if(bUniq)
+                {
+                    pNode->m_value = flight;
+
+                    std::cout << "Sucess edit";
+                }
+                else
+                {
+                    std::cout << "Error: flight have yet. Changes discarded";
+                }
+
             }
             else
             {
@@ -75,6 +88,8 @@ int main()
             break;
         case 3:
         {
+            std::cout << "Remove flight\n\n";
+
             const AEROFLOT flight = EnterFlight();
 
             LinkedList<AEROFLOT>::Node*const pNode = pFlights->Find(flight);
@@ -91,6 +106,7 @@ int main()
             break;
         case 4:
         {
+            std::cout << "Find flights operated by air\n\n";
 
             std::string strAircraft;
 
@@ -130,6 +146,8 @@ int main()
             break;
         case 5:
         {
+            std::cout << "Display the entire list of flights\n\n";
+
             const ERRORS err = PrintFlightList(*pFlights);
 
             if(err == ERRORS::OBJ_EMPTY)
@@ -140,6 +158,8 @@ int main()
             break;
         case 6:
         {
+            std::cout << "Sort flights list\n\n";
+
             std::cout << "Enter sort by:"
                       << "\n 1. Destination"
                       << "\n 2. Flight number"
@@ -165,6 +185,8 @@ int main()
             break;
         case 7:
         {
+            std::cout << "Save database\n\n";
+
             const QJsonArray jArrFlights = AeroflotListToJson(*pFlights);
 
             std::cout << "Enter filename with extension: ";
@@ -189,6 +211,8 @@ int main()
             break;
         case 8:
         {
+            std::cout << "Load database\n\n";
+
             std::cout << "Enter filename with extension: ";
 
             const std::string strName = GetStringValue();
